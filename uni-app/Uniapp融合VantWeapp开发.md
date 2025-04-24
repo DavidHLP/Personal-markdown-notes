@@ -15,9 +15,9 @@
 
 ### 1. 将 `@vant/weapp` 包移动到 `src/wxcomponents` 目录
 
-:::note
+::note
 weapp 目录中只保留 `dist` 目录
-:::
+::
 
 ![wxcomponents 目录结构](./Uniapp-VantWeapp-image/wxcomponents.png)
 
