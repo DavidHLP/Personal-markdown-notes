@@ -27,7 +27,7 @@
    ```
 
 <div align="center">
-  <img src="https://davidhlp.asia/d/HLP/Blog/docker/d3b1d14970add8bc016633d95403c5ee.png" />
+  <img src="./image/docker-push-pull.png" />
   <p style="margin-top: 2px;">docker push 和 docker pull</p>
 </div>
 
@@ -57,7 +57,7 @@
    ```
 
 <div align="center">
-  <img src="https://davidhlp.asia/d/HLP/Blog/docker/d0b706728f2422737a2997a6a7da3ac7.png" />
+  <img src="./image/docker-rmi.png" />
   <p style="margin-top: 2px;">docker rmi</p>
 </div>
 
@@ -75,7 +75,7 @@
    ```
 
 <div align="center">
-  <img src="https://davidhlp.asia/d/HLP/Blog/docker/633a1b61f75f43f2cfc3a7f12497e3ca.png" />
+  <img src="./image/docker-build.png" />
   <p style="margin-top: 2px;">docker build</p>
 </div>
 
@@ -92,7 +92,7 @@
    ```
       
 <div align="center">
-  <img src="https://davidhlp.asia/d/HLP/Blog/docker/e0736fc43fe4b9977a6524c871c4196a.png" />
+  <img src="./image/docker-save.png" />
   <p style="margin-top: 2px;">docker save</p>
 </div>
 
@@ -106,7 +106,7 @@
    ```
    
 <div align="center">
-  <img src="https://davidhlp.asia/d/HLP/Blog/docker/49f9bda921aa6a4b096632dee560c561.png" />
+  <img src="./image/docker-build.png" />
   <p style="margin-top: 2px;">docker load</p>
 </div>
 
@@ -146,7 +146,7 @@
    ```
 
 <div align="center">
-  <img src="https://davidhlp.asia/d/HLP/Blog/docker/9a812586d31f02dad1cb3bd0502e46eb.png" />
+  <img src="./image/docker-run-stop-start.png" />
   <p style="margin-top: 2px;">docker run 、 docker stop 和 docker start</p>
 </div>
 
@@ -176,7 +176,7 @@
    ```
    
 <div align="center">
-  <img src="https://davidhlp.asia/d/HLP/Blog/docker/5beb68a9a10ab4f9a3a07a8a57f6950e.png" />
+  <img src="./image/docker-rm.png" />
   <p style="margin-top: 2px;">docker rm</p>
 </div>
 
