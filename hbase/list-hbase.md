@@ -1,5 +1,7 @@
 # Hbase
 
+- [Hbase高可用集群Docker安装](./Hbase高可用集群Docker安装.md)
+
 ## Hbase基础知识
 
 - [Hbase概述](./Hbase基础知识/Hbase概述.md)
