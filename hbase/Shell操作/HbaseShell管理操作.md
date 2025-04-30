@@ -1,8 +1,16 @@
-## Hbase Shell 管理操作
+# HBase Shell 管理操作
+
+## 简介
+
+HBase Shell是Apache HBase的命令行工具，提供与HBase数据库交互的接口。通过Shell命令，用户可以执行数据库管理操作、表管理和数据操作等功能。本文档主要介绍HBase Shell的管理操作命令。
+
+## 集群信息操作
+
+这些命令用于查看和管理HBase集群的基本信息。
 
 ### status
 
-- 显示服务器集群状态
+- 显示服务器集群状态，包括活跃的master数量、备份的master数量、RegionServer数量和集群负载
 
 **示例：**
 ```shell
@@ -13,7 +21,7 @@ Took 0.3839 seconds
 
 ### whoami
 
-- 显示Hbase当前的用户
+- 显示当前连接HBase的用户身份和权限信息
 
 **示例：**
 ```shell
@@ -23,9 +31,13 @@ root (auth:SIMPLE)
 Took 0.0472 seconds
 ```
 
+## 表信息查询
+
+这些命令用于查询HBase中表的基本信息。
+
 ### list
 
-- 显示当前所有的表
+- 列出HBase中所有表的名称
 
 **示例：**
 ```shell
@@ -40,8 +52,8 @@ Took 0.0294 seconds
 
 ### count
 
-- 统计指定表的记录数
-- 不对大数据量的表使用，会占用大量资源
+- 统计指定表的总行数
+- 注意：不建议在大数据量表上使用此命令，会占用大量资源和时间
 
 **示例：**
 ```shell
@@ -53,7 +65,7 @@ Took 0.0544 seconds
 
 ### describe
 
-- 展示表的结构信息
+- 详细展示表的结构信息，包括表状态、列族详情和设置参数
 
 **示例：**
 ```shell
@@ -74,7 +86,8 @@ Took 0.1130 seconds
 
 ### exists
 
-- 检查是否存在这个表，适用于表量十分大
+- 检查指定表是否存在
+- 相比list命令，更适用于快速检查特定表，尤其在表数量很大的情况下
 
 **示例：**
 ```shell
@@ -90,7 +103,8 @@ Took 0.0066 seconds
 
 ### is_enabled / is_disabled
 
-- 检测表是否启用或者禁用
+- 检查指定表是否处于启用或禁用状态
+- 在执行某些操作（如drop）前，需要先确认表的状态
 
 **示例：**
 ```shell
@@ -102,12 +116,28 @@ hbase:011:0> is_disabled 'ORDER_INFO'
 false                                                                                                                                                                                                                
 Took 0.0099 seconds                                                                                                                                                                                                  
 => false
-hbase:012:0> 
+```
+
+## 表管理操作
+
+这些命令用于创建、修改和管理HBase表。
+
+### create
+
+- 创建新表，指定表名和一个或多个列族
+
+**示例：**
+```shell
+hbase:013:0> create 'NEW_TABLE', 'CF1', 'CF2'
+Created table NEW_TABLE
+Took 0.8123 seconds                                                                                                                                                                                                  
+=> Hbase::Table - NEW_TABLE
 ```
 
 ### alter
 
-- alter可以改变表列族的模式
+- 修改表的结构，包括添加、删除列族或更改列族属性
+- 修改表的结构不会影响表中现有数据
 
 **示例：**
 ```shell
@@ -171,7 +201,9 @@ Took 0.0699 seconds
 
 ### disable / enable
 
-- 禁用和启用一张表
+- 禁用和启用表
+- 许多管理操作（如drop、alter）要求表先被禁用
+- 禁用表期间，表不可访问
 
 **示例：**
 ```shell
@@ -183,7 +215,8 @@ Took 0.6413 seconds
 
 ### drop
 
-- 删除一张表（只能删除已经禁用的表）
+- 永久删除一张表及其所有数据
+- 注意：只能删除已经被禁用的表，且操作不可恢复
 
 **示例：**
 ```shell
@@ -195,8 +228,9 @@ Took 0.3635 seconds
 
 ### truncate
 
-- 清空表数据：禁用表->删除表->创建表
-- 在运行这个之前请记得备份拍快照
+- 清空表中所有数据，但保留表结构
+- 实际操作为：禁用表->删除表->以相同结构重新创建表
+- 重要：在执行此操作前应考虑备份或快照
 
 **示例：**
 ```shell
@@ -235,3 +269,92 @@ ROW                                                    COLUMN+CELL
 0 row(s)
 Took 0.6254 seconds     
 ```
+
+## 数据操作命令
+
+除了上述管理操作外，HBase Shell还提供了一系列数据操作命令，如：
+
+### put
+
+- 向表中插入或更新单元格数据
+
+### get
+
+- 获取表中特定行的数据
+- 支持获取整行数据或指定列族、列的数据
+- 可以指定时间戳版本或获取多版本数据
+
+**语法：**
+```shell
+get '<表名>', '<行键>', {COLUMN => '<列族:列名>', VERSIONS => <版本数>, TIMESTAMP => <时间戳>}
+```
+
+**示例：**
+```shell
+# 获取行数据
+hbase:001:0> get 'ORDER_INFO', 'row1'
+COLUMN                        CELL                                                                                                                                                                            
+ C1:order_count               timestamp=2024-10-15T13:25:40.085, value=\x00\x00\x00\x00\x00\x00\x00(                                                                                          
+ C1:order_date                timestamp=2024-10-15T12:52:37.435, value=2024-10-01                                                                                                              
+ C1:order_id                  timestamp=2024-10-15T13:20:09.379, value=11111                                                                                                                   
+ C2:customer_name             timestamp=2024-10-15T12:52:37.460, value=Alice                                                                                                                  
+ C2:customer_phone            timestamp=2024-10-15T12:52:37.486, value=123-456-7890                                                                                                          
+5 row(s)
+Took 0.0351 seconds
+
+# 获取指定列族数据
+hbase:002:0> get 'ORDER_INFO', 'row1', {COLUMN => 'C1'}
+COLUMN                        CELL                                                                                                                                                                            
+ C1:order_count               timestamp=2024-10-15T13:25:40.085, value=\x00\x00\x00\x00\x00\x00\x00(                                                                                          
+ C1:order_date                timestamp=2024-10-15T12:52:37.435, value=2024-10-01                                                                                                              
+ C1:order_id                  timestamp=2024-10-15T13:20:09.379, value=11111                                                                                                                   
+3 row(s)
+Took 0.0284 seconds
+
+# 获取指定列的数据
+hbase:003:0> get 'ORDER_INFO', 'row1', {COLUMN => 'C1:order_id'}
+COLUMN                        CELL                                                                                                                                                                            
+ C1:order_id                  timestamp=2024-10-15T13:20:09.379, value=11111                                                                                                                   
+1 row(s)
+Took 0.0241 seconds
+
+# 获取多个版本的数据
+hbase:004:0> get 'ORDER_INFO', 'row1', {COLUMN => 'C1:order_id', VERSIONS => 3}
+COLUMN                        CELL                                                                                                                                                                            
+ C1:order_id                  timestamp=2024-10-15T13:20:09.379, value=11111                                                                                                                   
+ C1:order_id                  timestamp=2024-10-15T12:52:37.379, value=12345                                                                                                                   
+2 row(s)
+Took 0.0289 seconds
+```
+
+### scan
+
+- 扫描表中的数据，可设定开始和结束行、过滤条件等
+
+### delete
+
+- 删除表中的数据（单元格、列、列族或整行）
+
+## 高级命令
+
+HBase Shell还提供了一些高级管理命令：
+
+### snapshot
+
+- 创建表的快照，用于备份或迁移
+
+### clone_snapshot
+
+- 从现有快照创建新表
+
+### restore_snapshot
+
+- 从快照恢复表数据
+
+### balance_switch
+
+- 启用或禁用自动负载均衡
+
+## 总结
+
+HBase Shell提供了全面的命令集用于管理HBase集群、表和数据。正确使用这些命令可以高效地管理和维护HBase数据库。对于大型集群或生产环境，建议在执行可能影响性能的操作前先测试并评估影响。
