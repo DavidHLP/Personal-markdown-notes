@@ -1,0 +1,217 @@
+=====================================
+Hadoop 集群初始化日志
+开始时间: 2025-05-25 17:07:40
+日志文件: /home/david/Project/DavidHLP.github.io/hadoop-hbase-spark/hadoop-init-20250525_170740.log
+=====================================
+
+[INFO] 2025-05-25 17:07:40 - Hadoop 高可用集群初始化脚本启动...
+[INFO] 2025-05-25 17:07:40 - 日志文件位置: /home/david/Project/DavidHLP.github.io/hadoop-hbase-spark/hadoop-init-20250525_170740.log
+
+========================================
+步骤 0: 启动Hadoop集群容器
+========================================
+[INFO] 2025-05-25 17:07:40 - 使用docker-compose启动所有容器...
+[INFO] 2025-05-25 17:07:40 - 执行: 启动Docker容器
+[COMMAND] 启动Docker容器
+[CMD] docker-compose -f hadoop-compose.yml up -d
+[OUTPUT] time="2025-05-25T17:07:40+08:00" level=warning msg="Found orphan containers ([zoo3 zoo1 zoo2]) for this project. If you removed or renamed this service in your compose file, you can run this command with the --remove-orphans flag to clean it up."
+ Container hadoop-worker2  Creating
+ Container hadoop-worker3  Creating
+ Container hadoop-master3  Creating
+ Container hadoop-master2  Creating
+ Container hadoop-worker1  Creating
+ Container hadoop-master1  Creating
+ Container hadoop-worker2  Created
+ Container hadoop-worker3  Created
+ Container hadoop-master1  Created
+ Container hadoop-master2  Created
+ Container hadoop-worker1  Created
+ Container hadoop-master3  Created
+ Container hadoop-worker1  Starting
+ Container hadoop-worker3  Starting
+ Container hadoop-worker2  Starting
+ Container hadoop-master2  Starting
+ Container hadoop-master3  Starting
+ Container hadoop-master1  Starting
+ Container hadoop-worker1  Started
+ Container hadoop-master3  Started
+ Container hadoop-worker3  Started
+ Container hadoop-master1  Started
+ Container hadoop-worker2  Started
+ Container hadoop-master2  Started
+[EXIT_CODE] 0
+
+[SUCCESS] 2025-05-25 17:07:41 - 容器启动命令执行成功
+[INFO] 2025-05-25 17:07:41 - 等待容器完全启动...
+
+========================================
+步骤 1: 检查Docker容器状态
+========================================
+[SUCCESS] 2025-05-25 17:07:51 - 容器 hadoop-master1 正在运行
+[SUCCESS] 2025-05-25 17:07:51 - 容器 hadoop-master2 正在运行
+[SUCCESS] 2025-05-25 17:07:51 - 容器 hadoop-master3 正在运行
+[SUCCESS] 2025-05-25 17:07:51 - 容器 hadoop-worker1 正在运行
+[SUCCESS] 2025-05-25 17:07:51 - 容器 hadoop-worker2 正在运行
+[SUCCESS] 2025-05-25 17:07:51 - 容器 hadoop-worker3 正在运行
+
+========================================
+步骤 2: 检查SSH免密登录配置
+========================================
+[INFO] 2025-05-25 17:07:51 - 配置master1到其他节点的SSH连接...
+[SUCCESS] 2025-05-25 17:07:51 - master1 -> master2 SSH连接成功
+[SUCCESS] 2025-05-25 17:07:51 - master1 -> master3 SSH连接成功
+[INFO] 2025-05-25 17:07:51 - 配置master2到其他节点的SSH连接...
+[INFO] 2025-05-25 17:07:51 - 配置master3到其他节点的SSH连接...
+[SUCCESS] 2025-05-25 17:07:52 - SSH免密登录配置完成
+
+========================================
+步骤 3: 启动JournalNode服务
+========================================
+[INFO] 2025-05-25 17:07:52 - 在Master节点启动JournalNode...
+[INFO] 2025-05-25 17:07:58 - 在Worker节点启动JournalNode（可选）...
+[SUCCESS] 2025-05-25 17:08:04 - JournalNode服务启动完成
+
+========================================
+步骤 4: 初始化主NameNode
+========================================
+[INFO] 2025-05-25 17:08:07 - 格式化master1上的NameNode...
+[SUCCESS] 2025-05-25 17:08:09 - NameNode格式化成功
+[INFO] 2025-05-25 17:08:09 - 启动master1上的NameNode...
+
+========================================
+步骤 5: 配置备用NameNode
+========================================
+[INFO] 2025-05-25 17:08:16 - 配置master2作为Standby NameNode...
+[SUCCESS] 2025-05-25 17:08:18 - master2 Standby NameNode配置成功
+[INFO] 2025-05-25 17:08:20 - 配置master3作为Standby NameNode...
+[SUCCESS] 2025-05-25 17:08:21 - master3 Standby NameNode配置成功
+[SUCCESS] 2025-05-25 17:08:23 - 备用NameNode配置完成
+
+========================================
+步骤 6: 停止DFS服务准备重新配置
+========================================
+[INFO] 2025-05-25 17:08:26 - 停止分布式文件系统...
+
+========================================
+步骤 7: 初始化ZooKeeper故障切换控制器
+========================================
+[INFO] 2025-05-25 17:08:36 - 格式化ZooKeeper中的HA状态信息...
+[SUCCESS] 2025-05-25 17:08:37 - ZooKeeper格式化成功
+
+========================================
+步骤 8: 启动Hadoop服务
+========================================
+[INFO] 2025-05-25 17:08:37 - 启动ZooKeeper故障切换控制器...
+[INFO] 2025-05-25 17:08:39 - 启动分布式文件系统...
+[INFO] 2025-05-25 17:08:58 - 启动YARN资源管理器...
+[SUCCESS] 2025-05-25 17:09:13 - Hadoop服务启动完成
+
+========================================
+步骤 9: 验证服务状态
+========================================
+[INFO] 2025-05-25 17:09:13 - 检查NameNode状态...
+[INFO] 2025-05-25 17:09:13 - 执行: 检查NameNode nn1状态
+[COMMAND] 检查NameNode nn1状态
+[CMD] docker exec hadoop-master1 /opt/hadoop/bin/hdfs haadmin -getServiceState nn1
+[OUTPUT] active
+[EXIT_CODE] 0
+
+[INFO] 2025-05-25 17:09:14 - 执行: 检查NameNode nn2状态
+[COMMAND] 检查NameNode nn2状态
+[CMD] docker exec hadoop-master1 /opt/hadoop/bin/hdfs haadmin -getServiceState nn2
+[OUTPUT] standby
+[EXIT_CODE] 0
+
+[INFO] 2025-05-25 17:09:15 - 执行: 检查HDFS集群状态
+[COMMAND] 检查HDFS集群状态
+[CMD] docker exec hadoop-master1 /opt/hadoop/bin/hdfs dfsadmin -report
+[OUTPUT] Configured Capacity: 6041974652928 (5.50 TB)
+Present Capacity: 4371025477632 (3.98 TB)
+DFS Remaining: 4371025403904 (3.98 TB)
+DFS Used: 73728 (72 KB)
+DFS Used%: 0.00%
+Replicated Blocks:
+	Under replicated blocks: 0
+	Blocks with corrupt replicas: 0
+	Missing blocks: 0
+	Missing blocks (with replication factor 1): 0
+	Low redundancy blocks with highest priority to recover: 0
+	Pending deletion blocks: 0
+Erasure Coded Block Groups: 
+	Low redundancy block groups: 0
+	Block groups with corrupt internal blocks: 0
+	Missing block groups: 0
+	Low redundancy blocks with highest priority to recover: 0
+	Pending deletion blocks: 0
+
+-------------------------------------------------
+Live datanodes (3):
+
+Name: 10.10.1.23:9866 (hadoop-worker1.zookeeper-cluster)
+Hostname: hadoop-worker1
+Decommission Status : Normal
+Configured Capacity: 2013991550976 (1.83 TB)
+DFS Used: 24576 (24 KB)
+Non DFS Used: 454602354688 (423.38 GB)
+DFS Remaining: 1457008467968 (1.33 TB)
+DFS Used%: 0.00%
+DFS Remaining%: 72.34%
+Configured Cache Capacity: 0 (0 B)
+Cache Used: 0 (0 B)
+Cache Remaining: 0 (0 B)
+Cache Used%: 100.00%
+Cache Remaining%: 0.00%
+Xceivers: 0
+Last contact: Sun May 25 17:09:15 CST 2025
+Last Block Report: Sun May 25 17:08:54 CST 2025
+Num of Blocks: 0
+
+
+Name: 10.10.1.24:9866 (hadoop-worker2.zookeeper-cluster)
+Hostname: hadoop-worker2
+Decommission Status : Normal
+Configured Capacity: 2013991550976 (1.83 TB)
+DFS Used: 24576 (24 KB)
+Non DFS Used: 454602354688 (423.38 GB)
+DFS Remaining: 1457008467968 (1.33 TB)
+DFS Used%: 0.00%
+DFS Remaining%: 72.34%
+Configured Cache Capacity: 0 (0 B)
+Cache Used: 0 (0 B)
+Cache Remaining: 0 (0 B)
+Cache Used%: 100.00%
+Cache Remaining%: 0.00%
+Xceivers: 0
+Last contact: Sun May 25 17:09:15 CST 2025
+Last Block Report: Sun May 25 17:08:54 CST 2025
+Num of Blocks: 0
+
+
+Name: 10.10.1.25:9866 (hadoop-worker3.zookeeper-cluster)
+Hostname: hadoop-worker3
+Decommission Status : Normal
+Configured Capacity: 2013991550976 (1.83 TB)
+DFS Used: 24576 (24 KB)
+Non DFS Used: 454602354688 (423.38 GB)
+DFS Remaining: 1457008467968 (1.33 TB)
+DFS Used%: 0.00%
+DFS Remaining%: 72.34%
+Configured Cache Capacity: 0 (0 B)
+Cache Used: 0 (0 B)
+Cache Remaining: 0 (0 B)
+Cache Used%: 100.00%
+Cache Remaining%: 0.00%
+Xceivers: 0
+Last contact: Sun May 25 17:09:15 CST 2025
+Last Block Report: Sun May 25 17:08:54 CST 2025
+Num of Blocks: 0
+[EXIT_CODE] 0
+
+[SUCCESS] 2025-05-25 17:09:17 - Hadoop 高可用集群初始化脚本执行完成！
+[INFO] 2025-05-25 17:09:17 - 完成时间: 2025-05-25 17:09:17
+[INFO] 2025-05-25 17:09:17 - 日志已保存到: /home/david/Project/DavidHLP.github.io/hadoop-hbase-spark/hadoop-init-20250525_170740.log
+
+=====================================
+脚本执行完成
+结束时间: 2025-05-25 17:09:17
+=====================================

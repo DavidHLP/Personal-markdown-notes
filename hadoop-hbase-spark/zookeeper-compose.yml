@@ -1,0 +1,59 @@
+services:
+  zoo1:
+    image: zookeeper:3.7.1-temurin
+    container_name: zoo1
+    restart: always
+    hostname: zoo1
+    ports:
+      - 2181:2181
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=zoo2:2888:3888;2181 server.3=zoo3:2888:3888;2181
+    volumes:
+      - ~/opt/docker-data/hadoop-hbase-spark/zoo1/data:/data
+      - ~/opt/docker-data/hadoop-hbase-spark/zoo1/logs:/datalog
+    networks:
+      zookeeper-cluster:
+        ipv4_address: 10.10.1.10
+
+  zoo2:
+    image: zookeeper:3.7.1-temurin
+    container_name: zoo2
+    restart: always
+    hostname: zoo2
+    ports:
+      - 2182:2181
+    environment:
+      ZOO_MY_ID: 2
+      ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=zoo2:2888:3888;2181 server.3=zoo3:2888:3888;2181
+    volumes:
+      - ~/opt/docker-data/hadoop-hbase-spark/zoo2/data:/data
+      - ~/opt/docker-data/hadoop-hbase-spark/zoo2/logs:/datalog
+    networks:
+       zookeeper-cluster:
+        ipv4_address: 10.10.1.11
+
+  zoo3:
+    image: zookeeper:3.7.1-temurin
+    container_name: zoo3
+    restart: always
+    hostname: zoo3
+    ports:
+      - 2183:2181
+    environment:
+      ZOO_MY_ID: 3
+      ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=zoo2:2888:3888;2181 server.3=zoo3:2888:3888;2181
+    volumes:
+      - ~/opt/docker-data/hadoop-hbase-spark/zoo3/data:/data
+      - ~/opt/docker-data/hadoop-hbase-spark/zoo3/logs:/datalog
+    networks:
+      zookeeper-cluster:
+        ipv4_address: 10.10.1.12
+
+networks:
+  zookeeper-cluster:
+    name: zookeeper-cluster
+    external: true
+    ipam:
+      config:
+        - subnet: "10.10.1.0/24"
